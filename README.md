@@ -25,9 +25,9 @@ Script to select clusters can be run by using `npm start`.
 
 ## Reward
 
-Invoking cluster selection for an epoch is essential to ensure there is a churn in clusters selected for propagation in the network which results in selected clusters being able to propagate blocks in the network and receive tickets. Tickets when submitted by receivers will result in propagated clusters being rewarded. This ensures there is a inbuilt incentive for clusters who aren't selected in an epoch to invoke cluster selection. 
+Invoking cluster selection for an epoch is essential to ensure there is a churn in clusters selected for propagation in the network which results in selected clusters being able to propagate blocks in the network and receive tickets. Tickets when submitted by receivers will result in selected clusters being rewarded. This ensures there is a inbuilt incentive for clusters who aren't selected in an epoch to invoke cluster selection. 
 
-To bootstrap this process a reward equal to worst case transaction fee for cluster selection is given as reward to `msg.sender` of the tx that selects clusters for an epoch in `ETH`.
+To bootstrap this process a refund for transaction fee for cluster selection is given to `msg.sender` of the tx that selects clusters for an epoch in `ETH`. Clusters are free to topup this fund so that cluster selection happens at every epoch.
 
 ### Calculation of reward
 
