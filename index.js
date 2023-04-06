@@ -14,7 +14,7 @@ const ABI = new ethers.Interface([
 const contractAddress = process.env.CLUSTER_SELECTOR_ADDRESS;
 const contract = new ethers.Contract(contractAddress, ABI, provider);
 
-async function handleSelection() {
+async function handleSelectionRepeat() {
     const epochLength = parseInt(await contract.EPOCH_LENGTH());
     const maxReward = await contract.MAX_REWARD_FOR_CLUSTER_SELECTION();
 
@@ -24,7 +24,11 @@ async function handleSelection() {
     }, epochLength*1000);
 }
 
-async function selectClusters(maxReward) {
+async function handleSelection() {
+    await selectClusters();
+}
+
+async function selectClusters() {
     try {
         const epoch = Number(await contract.getCurrentEpoch());
         console.log(`${(new Date()).toJSON()} Current Epoch is  ${epoch}`);
@@ -34,14 +38,6 @@ async function selectClusters(maxReward) {
             console.log(`${new Date().toJSON()} Waiting to select clusters for epoch ${epoch+2}`);
             return;
         } catch(e) { console.log(`${new Date().toJSON()} Clusters not yet selected for epoch ${epoch+1}`); }
-
-        const estimatedGas = await contract.connect(signer).selectClusters.estimateGas();
-        const gasPrice = (await provider.getFeeData()).gasPrice;
-
-        if(estimatedGas * gasPrice > maxReward) {
-            console.log(`Error: Gas prices too high. Skipping cluster selection for epoch ${epoch+1}`);
-            return;
-        }
 
         console.log(`${new Date().toJSON()} Preparing tx to select clusters for epoch ${epoch+1}`);
         const tx = await contract.connect(signer).selectClusters();
@@ -57,4 +53,7 @@ async function selectClusters(maxReward) {
     }
 }
 
-handleSelection();
+module.exports = {
+    handleSelection,
+    handleSelectionRepeat
+}
